@@ -5,7 +5,7 @@ gameport.appendChild(renderer.view);
 
 var stage = new PIXI.Container();
 
-var texture = PIXI.Texture.fromImage("joshua.png");
+var texture = PIXI.Texture.fromImage("Assets/png/Character-sprite.png");
 
 var sprite = new PIXI.Sprite(texture);
 
