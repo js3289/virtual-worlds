@@ -7,20 +7,22 @@ var stage = new PIXI.Container();
 
 var texture = PIXI.Texture.fromImage("Assets/png/Character-sprite.png");
 
-var sprite = new PIXI.Sprite(texture);
+var character = new PIXI.Sprite(texture);
 
-sprite.anchor.x = 0.5;
-sprite.anchor.y = 0.5;
+character.anchor.x = 0.5;
+character.anchor.y = 0.5;
 
-sprite.position.x = 500;
-sprite.position.y = 500;
+character.position.x = 500;
+character.position.y = 500;
 
-stage.addChild(sprite);
+stage.addChild(character);
 
 function animate() { 
 	requestAnimationFrame(animate);
-	sprite.rotation += 0.05;
+	character.rotation += 0.05;
+	character.x += 2;
 	renderer.render(stage);
 }
+
 
 animate();
