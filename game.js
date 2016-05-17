@@ -102,23 +102,14 @@ function animate() {
 	renderer.render(stage);
 }
 
-function hasCollision(spr1, spr2) {
-	var collision = false;
-	
-	if(spr2.x > (spr1.x + spr1.width) || (spr2.x + spr2.width) < spr1.x ||
-	  spr2.y > (spr1.y + spr1.height) || (spr2.y + spr2.height) < spr1.y ) {
-		collision = true;
-		alert("Adam is gay as fuck");
-	}
-	
-	return collision;
-}
-
 function onKeyDown(key) {
     // W Key is 87 Up arrow is 38
     if (key.keyCode === 87 || key.keyCode === 38) {
 		character.direction = 1;
-		character.sprite.y -= character.movement;
+		if(!hasCollided()) {
+			character.sprite.y -= character.movement;
+		}
+		
     }
 
     // S Key is 83 Down arrow is 40
