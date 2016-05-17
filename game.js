@@ -53,7 +53,7 @@ class Coin {
 	constructor() {
 
 	this.isActive = true;
-	this.sprite = new PIXI.Sprite(PIXI.Texture.fromImage("Assets/png/coin.png") );
+	this.sprite = new PIXI.Sprite(PIXI.Texture.fromImage("Assets/png/Coin.png") );
 	this.sprite.anchor.x = 0.5;
 	this.sprite.anchor.y = 0.5;
 	this.sprite.position.x = Math.floor((Math.random() * 350) + 25);
