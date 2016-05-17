@@ -1,14 +1,19 @@
-// Globals + constants.
-
-// Gameport, renderer, stage
-	var gameport = document.getElementById("gameport");
-	var renderer = PIXI.autoDetectRenderer(400, 400);
-	var stage = new PIXI.Container();
+// Globals + constants start here. All comments until setup function
+	var HEIGHT = 400;
+	var WIDTH = 400;
+	var won = false;
 	
 // Aliases
 	TextureImage = PIXI.Texture.fromImage;
 	Sprite = PIXI.Sprite;
-	wContainer = PIXI.Container;
+	Container = PIXI.Container;
+	Renderer = PIXI.autoDetectRenderer;
+	
+// Gameport, renderer, stage, inventory
+	var gameport = document.getElementById("gameport");
+	var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
+	var stage = new Container();
+	var inventoryC = new Container();
 
 // Constants for anchoring sprites
 	LEFT = 0;
@@ -49,8 +54,12 @@ function setup() {
 	for(var j = 0; j < coins.length; j++) {
 		stage.addChild(coins[j].sprite)
 	}
+	
 // Define character
 	character = new Player("Assets/png/Character-sprite.png");
+	
+// Add inventory to container
+	stage.addChild(inventoryC);
 	
 // Add character to the stage	
 	stage.addChild(character.sprite);
@@ -72,21 +81,21 @@ function setup() {
  */
 class Player {
 	constructor(path) {
-
+	this.inventory = new Inventory();
 	this.direction = 0;
-	this.movement = 3;
+	this.movement = 5;
 	this.isClicked = false;
 	this.coins = 0;
 
 	this.temp = TextureImage(path);
-	this.sprite = new Sprite(this.temp);
+	this.sprite = new EnhSprite(true, this.temp);
 	this.sprite.interactive = true;
 
 	// Anchor player to middle of sprite. Starts at top left of the dungeon (pixel 30+30)
 	this.sprite.anchor.x = MIDDLE;
 	this.sprite.anchor.y = MIDDLE;
 	this.sprite.position.x = 30;
-	this.sprite.position.y = 30;
+	this.sprite.position.y = 300;
 
 	this.sprite
 		.on('mousedown', this.onButtonDown)
@@ -120,14 +129,38 @@ class Coin {
 	constructor() {
 
 	this.isActive = true;
-	this.sprite = new Sprite(TextureImage("Assets/png/Coin.png") );
+	this.sprite = new EnhSprite(true, TextureImage("Assets/png/Coin.png") );
 	this.sprite.anchor.x = 0.5;
 	this.sprite.anchor.y = 0.5;
-	this.sprite.position.x = Math.floor((Math.random() * 350) + 25);
-	this.sprite.position.y = Math.floor((Math.random() * 350) + 25);
+	this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
+	this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 75);
 	
 	this.sprite.scale.x = .6;
 	this.sprite.scale.y = .6;
+	}
+}
+
+class Inventory {
+	constructor() {
+		
+		this.sprite = new EnhSprite(false, TextureImage("Assets/png/backpack.png") );
+		inventoryC.visible = false;
+		inventoryC.addChild(this.sprite);
+		this.sprite.anchor.x = RIGHT;
+		this.sprite.anchor.y = BOTTOM;
+		this.sprite.position.x = WIDTH;
+		this.sprite.position.y = HEIGHT;
+	}
+	
+	interact() {
+		inventoryC.visible = !inventoryC.visible;
+	}
+}
+
+class EnhSprite extends PIXI.Sprite {
+	constructor(collides, texture) {
+		super(texture)
+		this.collides = collides;
 	}
 }
 
@@ -136,6 +169,5 @@ function animate() {
 	renderer.render(stage);
 }
 
-// Create character
 
 setup();

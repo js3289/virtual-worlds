@@ -41,4 +41,8 @@ function onKeyDown(key) {
 			character.sprite.x += character.movement;
 		}
     }
+	
+	else if (key.keyCode === 73 || key.keyCode === 66) {
+		character.inventory.interact();
+	}
 }
