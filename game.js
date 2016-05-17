@@ -1,11 +1,75 @@
-var gameport = document.getElementById("gameport");
-var renderer = PIXI.autoDetectRenderer(400, 400);
-gameport.appendChild(renderer.view);
+// Globals + constants.
 
+// Gameport, renderer, stage
+	var gameport = document.getElementById("gameport");
+	var renderer = PIXI.autoDetectRenderer(400, 400);
+	var stage = new PIXI.Container();
+	
+// Aliases
+	TextureImage = PIXI.Texture.fromImage;
+	Sprite = PIXI.Sprite;
+	wContainer = PIXI.Container;
 
-var stage = new PIXI.Container();
+// Constants for anchoring sprites
+	LEFT = 0;
+	TOP = 0;
+	MIDDLE = .5;
+	BOTTOM = 1;
+	RIGHT = 1;
+	
+// Create coins array
+	coins = [];
+	
+// Create var for player
+	var character;
 
+function setup() {
 
+// Add renderer to gameport
+	gameport.appendChild(renderer.view);
+	
+// Create background. Center background + add it to stage.
+	var background = new Sprite(TextureImage("Assets/png/Dungeon-background.png"));
+	background.anchor.x = MIDDLE;
+	background.anchor.y = MIDDLE;
+	background.position.x = 200;
+	background.position.y = 200;
+
+// Add background to stage
+	stage.addChild(background);
+	
+// Populate coins with coin objects
+	for(var i = 0; i < 10; i++) {
+		if(Math.floor((Math.random() * 2) + 1) === 1) {
+			coins.push(new Coin());
+		}
+	}
+
+// Add all coins to the stage
+	for(var j = 0; j < coins.length; j++) {
+		stage.addChild(coins[j].sprite)
+	}
+// Define character
+	character = new Player("Assets/png/Character-sprite.png");
+	
+// Add character to the stage	
+	stage.addChild(character.sprite);
+	
+// Add listener for key presses to our page
+	document.addEventListener('keydown', onKeyDown);
+	
+// Pass control to animate
+	animate();
+}
+
+/**
+ * Player Class - Contains information about the player
+ * @param {string} path - path for sprite asset
+ * Notable attributes
+ * 		Direction (used for weapons + equipment later)
+ * 		Movement - speed at which player moves, can be upgraded @ shop later with money collected from dungeons
+ *		Coins - amount of money player hasCollided
+ */
 class Player {
 	constructor(path) {
 
@@ -14,12 +78,13 @@ class Player {
 	this.isClicked = false;
 	this.coins = 0;
 
-	this.temp = PIXI.Texture.fromImage(path);
-	this.sprite = new PIXI.Sprite(this.temp);
+	this.temp = TextureImage(path);
+	this.sprite = new Sprite(this.temp);
 	this.sprite.interactive = true;
 
-	this.sprite.anchor.x = 0.5;
-	this.sprite.anchor.y = 0.5;
+	// Anchor player to middle of sprite. Starts at top left of the dungeon (pixel 30+30)
+	this.sprite.anchor.x = MIDDLE;
+	this.sprite.anchor.y = MIDDLE;
 	this.sprite.position.x = 30;
 	this.sprite.position.y = 30;
 
@@ -32,7 +97,8 @@ class Player {
 		.on('touchendoutside', this.onButtonUp);
 
 	}
-
+	
+	// If you click down on the player, and it isn't already clicked, move it.
 	onButtonDown() {
 		if(!character.isClicked) {
 			character.sprite.y -= 100;
@@ -40,6 +106,7 @@ class Player {
 		}
 	}
 
+	// If you release click on the player and it is already clicked, move it.
 	onButtonUp() {
 		if(character.isClicked) {
 			character.sprite.y += 100;
@@ -53,7 +120,7 @@ class Coin {
 	constructor() {
 
 	this.isActive = true;
-	this.sprite = new PIXI.Sprite(PIXI.Texture.fromImage("Assets/png/Coin.png") );
+	this.sprite = new Sprite(TextureImage("Assets/png/Coin.png") );
 	this.sprite.anchor.x = 0.5;
 	this.sprite.anchor.y = 0.5;
 	this.sprite.position.x = Math.floor((Math.random() * 350) + 25);
@@ -64,76 +131,11 @@ class Coin {
 	}
 }
 
-var character = new Player("Assets/png/Character-sprite.png");
-var background = new PIXI.Sprite(PIXI.Texture.fromImage("Assets/png/Dungeon-background.png"));
-
-
-var coins = [];
-
-for(var i = 0; i < 10; i++) {
-	if(Math.floor((Math.random() * 2) + 1) === 1) {
-		coins.push(new Coin());
-	}
-}
-
-
-background.anchor.x = 0.5;
-background.anchor.y = 0.5;
-background.position.x = 200;
-background.position.y = 200;
-
-stage.addChild(background);
-
-for(var j = 0; j < coins.length; j++) {
-	stage.addChild(coins[j].sprite)
-}
-stage.addChild(character.sprite);
-
-document.addEventListener('keydown', onKeyDown);
-
 function animate() { 
 	requestAnimationFrame(animate);
-	for(var i = 0; i < coins.length; i++){
-		//coins[i].sprite.scale.x -= .1;
-	}
 	renderer.render(stage);
 }
 
-function onKeyDown(key) {
-    // W Key is 87 Up arrow is 38
-    if (key.keyCode === 87 || key.keyCode === 38) {
-		character.direction = 1;
-		if(!hasCollided()) {
-			character.sprite.y -= character.movement;
-		}
-		
-    }
+// Create character
 
-    // S Key is 83 Down arrow is 40
-    else if (key.keyCode === 83 || key.keyCode === 40) {
-		character.direction = 0;
-		if(!hasCollided()) {
-			character.sprite.y += character.movement;
-		}
-    }
-
-    // A Key is 65 Left arrow is 37
-    if (key.keyCode === 65 || key.keyCode === 37) {
-		character.direction = 2;
-		character.sprite.scale.x = -1;
-		if(!hasCollided()) {
-			character.sprite.x -= character.movement;
-		}
-    }
-
-    // D Key is 68 Right arrow is 39
-    else if (key.keyCode === 68 || key.keyCode === 39) {
-		character.direction = 3;
-		character.sprite.scale.x = 1;
-		if(!hasCollided()) {
-			character.sprite.x += character.movement;
-		}
-    }
-}
-
-animate();
+setup();
