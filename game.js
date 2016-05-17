@@ -8,10 +8,11 @@ var stage = new PIXI.Container();
 
 class Player {
 	constructor(path) {
-	
+
 	this.direction = 0;
 	this.movement = 3;
 	this.isClicked = false;
+	this.coins = 0;
 
 	this.temp = PIXI.Texture.fromImage(path);
 	this.sprite = new PIXI.Sprite(this.temp);
@@ -19,8 +20,8 @@ class Player {
 
 	this.sprite.anchor.x = 0.5;
 	this.sprite.anchor.y = 0.5;
-	this.sprite.position.x = 200;
-	this.sprite.position.y = 200;
+	this.sprite.position.x = 30;
+	this.sprite.position.y = 30;
 
 	this.sprite
 		.on('mousedown', this.onButtonDown)
@@ -45,12 +46,12 @@ class Player {
 			character.isClicked = false;
 		}
 	}
-	
+
 }
 
 class Coin {
 	constructor() {
-	
+
 	this.isActive = true;
 	this.sprite = new PIXI.Sprite(PIXI.Texture.fromImage("Assets/png/coin.png") );
 	this.sprite.anchor.x = 0.5;
@@ -92,13 +93,9 @@ document.addEventListener('keydown', onKeyDown);
 
 function animate() { 
 	requestAnimationFrame(animate);
-	
-	//for(var i = 0; i < coins.length; i++) {
-		//if(hasCollision(character.sprite, coins[i].sprite) ) {
-			//coins[i].delete;
-			//stage.removeChild(coins[i].sprite);
-		//}
-	//}
+	for(var i = 0; i < coins.length; i++){
+		//coins[i].sprite.scale.x -= .1;
+	}
 	renderer.render(stage);
 }
 
@@ -115,21 +112,27 @@ function onKeyDown(key) {
     // S Key is 83 Down arrow is 40
     else if (key.keyCode === 83 || key.keyCode === 40) {
 		character.direction = 0;
-		character.sprite.y += character.movement;
+		if(!hasCollided()) {
+			character.sprite.y += character.movement;
+		}
     }
 
     // A Key is 65 Left arrow is 37
-    else if (key.keyCode === 65 || key.keyCode === 37) {
-		character.sprite.x -= character.movement;
+    if (key.keyCode === 65 || key.keyCode === 37) {
 		character.direction = 2;
 		character.sprite.scale.x = -1;
+		if(!hasCollided()) {
+			character.sprite.x -= character.movement;
+		}
     }
 
     // D Key is 68 Right arrow is 39
     else if (key.keyCode === 68 || key.keyCode === 39) {
 		character.direction = 3;
-		character.sprite.x += character.movement;
 		character.sprite.scale.x = 1;
+		if(!hasCollided()) {
+			character.sprite.x += character.movement;
+		}
     }
 }
 
