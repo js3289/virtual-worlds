@@ -2,19 +2,20 @@
 	var HEIGHT = 400;
 	var WIDTH = 400;
 	var won = false;
-	
+
 // Aliases
 	TextureImage = PIXI.Texture.fromImage;
 	Sprite = PIXI.Sprite;
 	Container = PIXI.Container;
 	Renderer = PIXI.autoDetectRenderer;
-	
+
 // Gameport, renderer, stage, inventory, etc
 	var gameport = document.getElementById("gameport");
 	var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
 	var stage = new Container();
 	var inventoryC = new Container();
 	var winningC = new Container();
+	var losingC = new Container();
 
 // Constants for anchoring sprites
 	LEFT = 0;
@@ -22,10 +23,11 @@
 	MIDDLE = .5;
 	BOTTOM = 1;
 	RIGHT = 1;
-	
-// Create coins array
+
+// Create coins array, stump array
 	coins = [];
-	
+	objects = [];
+
 // Create var for player
 	var character;
 
@@ -75,26 +77,35 @@ function setup() {
 // Add background to stage
 	stage.addChild(background);
 	
-// Populate coins with coin objects
-	for(var i = 0; i < 10; i++) {
+// Populate coins + objects with coin objects
+	for(var i = 0; i < 20; i++) {
 		if(Math.floor((Math.random() * 2) + 1) === 1) {
-			coins.push(new Coin());
+			var tempCoin = new Coin();
+			coins.push(tempCoin);
+			objects.push(tempCoin);
 		}
 	}
-
-// Add all coins to the stage
-	for(var j = 0; j < coins.length; j++) {
-		stage.addChild(coins[j].sprite)
+	
+// Populate objects with stump objects
+	for(var i = 0; i < 20; i++) {
+		if(randInt(1,2) === 1) {
+			objects.push(new Stump());
+		}
 	}
 	
+// Add all objects to the stage
+	for(var j = 0; j < objects.length; j++) {
+		stage.addChild(objects[j].sprite)
+	}
+
 // Define character
 	character = new Player("Assets/png/Character-sprite.png");
 	
-// Add inventory to container
-	stage.addChild(inventoryC);
-	
 // Add character to the stage	
 	stage.addChild(character.sprite);
+	
+// Add inventory to container
+	stage.addChild(inventoryC);
 	
 // Add listener for key presses to our page
 	document.addEventListener('keydown', onKeyDown);
@@ -166,15 +177,47 @@ class Player {
 class Coin {
 	constructor() {
 
-	this.isActive = true;
+	this.isActive = false;
 	this.sprite = new EnhSprite("coin", true, TextureImage("Assets/png/Coin.png") );
-	this.sprite.anchor.x = 0.5;
-	this.sprite.anchor.y = 0.5;
-	this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
-	this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 75);
-	
+	this.sprite.anchor.x = MIDDLE;
+	this.sprite.anchor.y = MIDDLE;
 	this.sprite.scale.x = .6;
 	this.sprite.scale.y = .6;
+	this.sprite.height = 20;
+	this.sprite.width = 20;
+	
+	while(!this.isActive) {
+		this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
+		this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 75);
+		
+		this.isActive = !objSpawnCollided(this, objects);
+	}
+	
+	}
+}
+
+/**
+ *	Stump class
+ *	Creates a new stump object
+ *	Stump.X and Stump.Y positions are random, and won't appear on the walls of the map.
+ */
+class Stump {
+	constructor() {
+	
+	this.isActive = false;
+	this.sprite = new EnhSprite("stump", true, TextureImage("Assets/png/tree-stump.png"));
+	this.sprite.anchor.x = MIDDLE;
+	this.sprite.anchor.y = MIDDLE;
+	this.sprite.height = 32;
+	this.sprite.width = 32;
+	
+	while(!this.isActive) {
+		this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
+		this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 75);
+		
+		this.isActive = !objSpawnCollided(this, objects);
+	}
+	
 	}
 }
 

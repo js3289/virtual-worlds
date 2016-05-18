@@ -10,7 +10,7 @@ function onKeyDown(key) {
     // W Key is 87 Up arrow is 38
     if (key.keyCode === 87 || key.keyCode === 38) {
 		character.direction = 1;
-		if(!hasCollided()) {
+		if(!charHasCollided()) {
 			character.sprite.y -= character.movement;
 		}
 		
@@ -19,7 +19,7 @@ function onKeyDown(key) {
     // S Key is 83 Down arrow is 40
     else if (key.keyCode === 83 || key.keyCode === 40) {
 		character.direction = 0;
-		if(!hasCollided()) {
+		if(!charHasCollided()) {
 			character.sprite.y += character.movement;
 		}
     }
@@ -28,7 +28,7 @@ function onKeyDown(key) {
     if (key.keyCode === 65 || key.keyCode === 37) {
 		character.direction = 2;
 		character.sprite.scale.x = -1;
-		if(!hasCollided()) {
+		if(!charHasCollided()) {
 			character.sprite.x -= character.movement;
 		}
     }
@@ -37,7 +37,7 @@ function onKeyDown(key) {
     else if (key.keyCode === 68 || key.keyCode === 39) {
 		character.direction = 3;
 		character.sprite.scale.x = 1;
-		if(!hasCollided()) {
+		if(!charHasCollided()) {
 			character.sprite.x += character.movement;
 		}
     }
