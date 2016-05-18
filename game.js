@@ -9,11 +9,12 @@
 	Container = PIXI.Container;
 	Renderer = PIXI.autoDetectRenderer;
 	
-// Gameport, renderer, stage, inventory
+// Gameport, renderer, stage, inventory, etc
 	var gameport = document.getElementById("gameport");
 	var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
 	var stage = new Container();
 	var inventoryC = new Container();
+	var winningC = new Container();
 
 // Constants for anchoring sprites
 	LEFT = 0;

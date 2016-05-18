@@ -25,7 +25,19 @@ function hasCollided() {
 			if(charX >= childBaseX && charX <= childEndX && charY >= childBaseY && charY <= childEndY) {
 				stage.removeChild(temp);
 				character.coins += 100;
+				coins.splice(0, 1);
 				collision = true;
+				
+				if(coins.length == 0) {
+					this.sprite = new EnhSprite("winning", false, TextureImage("Assets/png/you-win.png") );
+					winningC.visible = true;
+					winningC.addChild(this.sprite);
+					this.sprite.anchor.x = MIDDLE;
+					this.sprite.anchor.y = MIDDLE;
+					this.sprite.position.x = WIDTH / 2;
+					this.sprite.position.y = HEIGHT / 2;
+					stage.addChild(winningC);
+				}
 
 			}	
 		}
