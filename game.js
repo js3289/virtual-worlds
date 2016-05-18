@@ -27,6 +27,13 @@
 	
 // Create var for player
 	var character;
+
+// useful function to return random integer
+function randInt(min, max) {
+	return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+// Function that checks to make sure character doesn't leave bounds of map
 function keepInBounds() {
 	var collision = false;
 	
@@ -50,7 +57,8 @@ function keepInBounds() {
 		collision = true;
 	}
 }
-	
+
+// setup() function sets everything we need for the game up, passes control to animate() afterwards
 function setup() {
 
 // Add renderer to gameport
@@ -148,6 +156,12 @@ class Player {
 
 }
 
+/**
+ *	Coin class
+ *	Creates a new coin object
+ *  Sprite.X and Sprite.Y positions are random, and won't appear on the walls of the map.
+ *	I made the sprite too large so it is scaled down quite a bit.
+ */
 class Coin {
 	constructor() {
 
@@ -163,6 +177,10 @@ class Coin {
 	}
 }
 
+/**
+ *	Inventory class
+ *	Holds all items in inventory as well as the sprite for the backpack interface seen in game
+ */
 class Inventory {
 	constructor() {
 		
@@ -180,6 +198,10 @@ class Inventory {
 	}
 }
 
+/**
+ *	EnhSprite is just an extension of PIXI.Sprite, keeps track of the name of the sprite as well as collision boolean
+ *	Will also contain any further information we need on our Sprites
+ */
 class EnhSprite extends PIXI.Sprite {
 	constructor(name, collides, texture) {
 		super(texture)
