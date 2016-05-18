@@ -27,7 +27,30 @@
 	
 // Create var for player
 	var character;
-
+function keepInBounds() {
+	var collision = false;
+	
+	if(character.sprite.x < 20) {
+		character.sprite.x = 20;
+		collision = true;
+	}
+	
+	if(character.sprite.x > 380) {
+		character.sprite.x = 380;
+		collision = true;
+	}
+	
+	if(character.sprite.y < 20) {
+		character.sprite.y = 20;
+		collision = true;
+	}
+	
+	if(character.sprite.y > 370) {
+		character.sprite.y = 370;
+		collision = true;
+	}
+}
+	
 function setup() {
 
 // Add renderer to gameport
@@ -88,7 +111,7 @@ class Player {
 	this.coins = 0;
 
 	this.temp = TextureImage(path);
-	this.sprite = new EnhSprite(true, this.temp);
+	this.sprite = new EnhSprite("player", true, this.temp);
 	this.sprite.interactive = true;
 
 	// Anchor player to middle of sprite. Starts at top left of the dungeon (pixel 30+30)
@@ -129,7 +152,7 @@ class Coin {
 	constructor() {
 
 	this.isActive = true;
-	this.sprite = new EnhSprite(true, TextureImage("Assets/png/Coin.png") );
+	this.sprite = new EnhSprite("coin", true, TextureImage("Assets/png/Coin.png") );
 	this.sprite.anchor.x = 0.5;
 	this.sprite.anchor.y = 0.5;
 	this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
@@ -143,7 +166,7 @@ class Coin {
 class Inventory {
 	constructor() {
 		
-		this.sprite = new EnhSprite(false, TextureImage("Assets/png/backpack.png") );
+		this.sprite = new EnhSprite("inventory", false, TextureImage("Assets/png/backpack.png") );
 		inventoryC.visible = false;
 		inventoryC.addChild(this.sprite);
 		this.sprite.anchor.x = RIGHT;
@@ -158,14 +181,19 @@ class Inventory {
 }
 
 class EnhSprite extends PIXI.Sprite {
-	constructor(collides, texture) {
+	constructor(name, collides, texture) {
 		super(texture)
+		super.name = name;
 		this.collides = collides;
+	}
+	
+	handleCollision() {
 	}
 }
 
 function animate() { 
 	requestAnimationFrame(animate);
+	keepInBounds();
 	renderer.render(stage);
 }
 

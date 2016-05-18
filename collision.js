@@ -22,18 +22,10 @@ function hasCollided() {
 			var childEndX = childX + temp.width / 2;
 			var childEndY = childY + temp.height / 2;
 
-
-			// Better collision later instead of just anchor
-			// if(charBaseX >= childBaseX && charBaseX <= childEndX && charBaseY >= childBaseY && charBaseY <= childEndY ||
-			//   charEndX >= childBaseX && charEndX <= childEndX && charEndY >= childBaseY && charEndY <= childEndY) {
-
 			if(charX >= childBaseX && charX <= childEndX && charY >= childBaseY && charY <= childEndY) {
-				//if(temp instanceof Coin ) {
-				//if(temp.height != renderer.height || temp.width != renderer.width && temp.children.length === 0) {
 				stage.removeChild(temp);
 				character.coins += 100;
 				collision = true;
-				//}
 
 			}	
 		}
