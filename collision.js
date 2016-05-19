@@ -41,6 +41,7 @@ function charHasCollided() {
 					sprite.position.x = WIDTH / 2;
 					sprite.position.y = HEIGHT / 2;
 					stage.addChild(losingC);
+					over = true;
 				}
 				
 				if(coins.length == 0) {
@@ -52,6 +53,7 @@ function charHasCollided() {
 					sprite.position.x = WIDTH / 2;
 					sprite.position.y = HEIGHT / 2;
 					stage.addChild(winningC);
+					over = true;
 				}
 
 			}	

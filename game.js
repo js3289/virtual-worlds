@@ -1,7 +1,8 @@
 // Globals + constants start here. All comments until setup function
-	var HEIGHT = 400;
-	var WIDTH = 400;
-	var won = false;
+	var HEIGHT;
+	var WIDTH;
+	var over;
+	keysActive = [];
 
 // Aliases
 	TextureImage = PIXI.Texture.fromImage;
@@ -10,27 +11,52 @@
 	Renderer = PIXI.autoDetectRenderer;
 
 // Gameport, renderer, stage, inventory, etc
-	var gameport = document.getElementById("gameport");
-	var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
-	var stage = new Container();
-	var inventoryC = new Container();
-	var winningC = new Container();
-	var losingC = new Container();
+	var gameport;
+	var renderer;
+	var stage;
+	var inventoryC;
+	var winningC;
+	var losingC;
 
 // Constants for anchoring sprites
+	var LEFT;
+	var TOP;
+	var MIDDLE;
+	var BOTTOM;
+	var RIGHT;
+
+// Create coins array, stump array
+	var coins = [];
+	var objects = [];
+
+// Create var for player
+	var character;
+
+function init() {
+	HEIGHT = 400;
+	WIDTH = 400;
+	over = false;
+	
+	keysActive = [];
+	coins = [];
+	objects = [];
+	
+	gameport = document.getElementById("gameport");
+	renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
+	
+	stage = new Container();
+	inventoryC = new Container();
+	winningC = new Container();
+	losingC = new Container();
+	
 	LEFT = 0;
 	TOP = 0;
 	MIDDLE = .5;
 	BOTTOM = 1;
 	RIGHT = 1;
-
-// Create coins array, stump array
-	coins = [];
-	objects = [];
-
-// Create var for player
-	var character;
-
+	
+	setup();
+}
 // useful function to return random integer
 function randInt(min, max) {
 	return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -45,7 +71,7 @@ function keepInBounds() {
 		collision = true;
 	}
 	
-	if(character.sprite.x > 380) {
+	if(character.sprite.x > 380 ) {
 		character.sprite.x = 380;
 		collision = true;
 	}
@@ -79,18 +105,14 @@ function setup() {
 	
 // Populate coins + objects with coin objects
 	for(var i = 0; i < 20; i++) {
-		if(Math.floor((Math.random() * 2) + 1) === 1) {
 			var tempCoin = new Coin();
 			coins.push(tempCoin);
 			objects.push(tempCoin);
-		}
 	}
 	
 // Populate objects with stump objects
-	for(var i = 0; i < 20; i++) {
-		if(randInt(1,2) === 1) {
+	for(var i = 0; i < 25; i++) {
 			objects.push(new Stump());
-		}
 	}
 	
 // Add all objects to the stage
@@ -108,7 +130,16 @@ function setup() {
 	stage.addChild(inventoryC);
 	
 // Add listener for key presses to our page
-	document.addEventListener('keydown', onKeyDown);
+	//document.addEventListener('keydown', onKeyDown);
+	document.addEventListener('keydown', function (e) {
+		keysActive[e.keyCode] = true;
+		e.preventDefault();
+		});
+		
+	document.addEventListener('keyup', function (e) {
+		keysActive[e.keyCode] = false;
+		e.preventDefault();
+		});
 	
 // Pass control to animate
 	animate();
@@ -126,7 +157,7 @@ class Player {
 	constructor(path) {
 	this.inventory = new Inventory();
 	this.direction = 0;
-	this.movement = 5;
+	this.movement = 2;
 	this.isClicked = false;
 	this.coins = 0;
 
@@ -138,7 +169,7 @@ class Player {
 	this.sprite.anchor.x = MIDDLE;
 	this.sprite.anchor.y = MIDDLE;
 	this.sprite.position.x = 30;
-	this.sprite.position.y = 300;
+	this.sprite.position.y = 30;
 
 	this.sprite
 		.on('mousedown', this.onButtonDown)
@@ -155,6 +186,7 @@ class Player {
 		if(!character.isClicked) {
 			character.sprite.y -= 100;
 			character.isClicked = true;
+			setup();
 		}
 	}
 
@@ -187,8 +219,8 @@ class Coin {
 	this.sprite.width = 20;
 	
 	while(!this.isActive) {
-		this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
-		this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 75);
+		this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 25);
+		this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 25);
 		
 		this.isActive = !objSpawnCollided(this, objects);
 	}
@@ -212,10 +244,13 @@ class Stump {
 	this.sprite.width = 32;
 	
 	while(!this.isActive) {
-		this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 75);
-		this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 75);
+		this.sprite.position.x = Math.floor((Math.random() * (WIDTH - 100)) + 40);
+		this.sprite.position.y = Math.floor((Math.random() * (HEIGHT - 100)) + 40);
 		
 		this.isActive = !objSpawnCollided(this, objects);
+		if(this.sprite.position.x + this.sprite.position.y <= 100) {
+			this.isActive = false;
+		}
 	}
 	
 	}
@@ -259,9 +294,9 @@ class EnhSprite extends PIXI.Sprite {
 
 function animate() { 
 	requestAnimationFrame(animate);
+	handleKeys();
 	keepInBounds();
 	renderer.render(stage);
 }
 
-
-setup();
+init();
